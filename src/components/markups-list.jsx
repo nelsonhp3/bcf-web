@@ -9,7 +9,6 @@ export function MarkupsList({ items }) {
   const [markup, setMarkup] = useMarkup()
 
   return (
-    <ResizablePanel>
       <ScrollArea className="h-screen">
         <div className="flex flex-col gap-2 p-4 pt-0">
           {items.map((item, index) => (
@@ -54,7 +53,6 @@ export function MarkupsList({ items }) {
           ))}
         </div>
       </ScrollArea>
-    </ResizablePanel>
   )
 }
 

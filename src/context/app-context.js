@@ -80,3 +80,11 @@ const snapshotAtom = atom({
 export function useSnapshot() {
     return useAtom(snapshotAtom)
 }
+
+const userAtom = atom({
+    name: 'Jhon Doe',
+})
+
+export function useUser() {
+    return useAtom(userAtom)
+}

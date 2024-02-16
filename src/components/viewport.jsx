@@ -25,8 +25,9 @@ export default function Viewport({src}) {
     },[snapshot])
 
     return (
-        <ResizablePanel>
+        <ResizablePanel className='w-full h-full'>
             <TransformWrapper
+                id='transformWrapper'
                 ref={transformComponentRef}
                 initialPositionX={0}
                 initialPositionY={0}
@@ -37,14 +38,7 @@ export default function Viewport({src}) {
                 zoomAnimation={{ disabled: true }}
                 alignmentAnimation={{ disabled: true }}
                 velocityAnimation={{ disabled: true }}
-                limitToBounds={false}
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    overflow: 'hidden',
-                    backgroundColor: 'red',
-                    cursor: 'grab'
-                }}>
+                limitToBounds={false}>
                 <TransformComponent>
                     <img id='viewpointViewer' src={snapshot.src ?? ''} alt='' />
                 </TransformComponent>

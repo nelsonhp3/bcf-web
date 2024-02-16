@@ -1,17 +1,20 @@
 import logo from './logo.svg'
-import './App.css'
 import { Textarea } from './components/ui/textarea'
 import { Button } from './components/ui/button'
 import { BcfContext } from './context/bcf-context'
 import { useContext } from 'react'
 import Topic from './components/topic'
 import { MarkupsList } from 'components/markups-list'
-import { ResizableHandle,ResizablePanelGroup } from 'components/ui/resizable'
+import { ResizableHandle,ResizablePanel,ResizablePanelGroup } from 'components/ui/resizable'
 import Viewport from 'components/viewport'
+import { useUser } from 'context/app-context'
+import AppHeader from 'components/app-header'
+import { Separator } from 'components/ui/separator'
 
 
 function App() {
   const { project,bcfDispatch } = useContext(BcfContext)
+  const [user,setUser] = useUser()
   console.log('project :>> ',project)
 
   return (
@@ -23,13 +26,16 @@ function App() {
             sizes
           )}`
         }}
-        className="h-full items-stretch"
-      >
-        <MarkupsList items={project.markups} />
+        className="h-full items-stretch">
+        <ResizablePanel>
+          <AppHeader />
+          <Separator />
+          <MarkupsList items={project.markups} />
+        </ResizablePanel>
         <ResizableHandle withHandle />
-        <Topic topic={project.markups[0].topic} />
+        <Topic topic={project.markups[0].topic} user={user} />
         <ResizableHandle withHandle />
-        <Viewport/>
+        <Viewport />
       </ResizablePanelGroup>
     </header>
   )
