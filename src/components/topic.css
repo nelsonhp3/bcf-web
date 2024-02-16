@@ -1,0 +1,93 @@
+.topicContainer {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 1rem;
+    font-size: 0.75rem;
+    background-color: #444;
+}
+
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 1em;
+}
+
+.titleAndDescription {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin-bottom: 2em;
+}
+
+.otherProperties {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.topicContainer h1 {
+    font-size: 1rem;
+}
+
+.topicContainer>span, .topicContainer>input {
+    font-size: 0.875rem;
+}
+
+.assignedToContainer, .labelsContainer {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.labelsList {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.chipsListContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+}
+
+.chipsListContainer>span {
+    font-size: 0.7rem;
+}
+
+.chipsListContainer>div {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chipItem {
+    background-color: var(--global-blue-background);
+    border: 0.1rem solid var(--global-blue);
+    border-radius: 0.5rem;
+    padding: 0.2rem 0.4rem;
+    align-self: flex-start;
+    font-size: 0.6rem;
+}
+
+.topicProperties {
+    display: flex;
+    gap: 2rem;
+}
+
+.dateContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    height: 3rem;
+}
