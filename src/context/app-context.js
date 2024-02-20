@@ -83,6 +83,7 @@ export function useSnapshot() {
 
 const userAtom = atom({
     name: 'Jhon Doe',
+    isEmpty: true
 })
 
 export function useUser() {

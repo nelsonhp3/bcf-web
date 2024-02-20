@@ -1,21 +1,66 @@
-import logo from './logo.svg'
-import { Textarea } from './components/ui/textarea'
 import { Button } from './components/ui/button'
-import { BcfContext } from './context/bcf-context'
-import { useContext } from 'react'
 import Topic from './components/topic'
 import { MarkupsList } from 'components/markups-list'
 import { ResizableHandle,ResizablePanel,ResizablePanelGroup } from 'components/ui/resizable'
 import Viewport from 'components/viewport'
-import { useUser } from 'context/app-context'
-import AppHeader from 'components/app-header'
+import { useMarkup,useUser } from 'context/app-context'
+import AppMenuBar from 'components/app-menubar'
 import { Separator } from 'components/ui/separator'
+import { Alert,AlertDescription,AlertTitle } from 'components/ui/alert'
+import { AlertTriangle,PlusIcon } from 'lucide-react'
+import { useContext,useEffect } from 'react'
+import { BcfContext } from 'context/bcf-context'
 
+function NoUserAlert({ user }) {
+  if (user.isEmpty)
+    return (
+      <button onClick={() => document.getElementById('setUserButton').click()} className='text-left px-4 pt-2 cursor-pointer'>
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>No User</AlertTitle>
+          <AlertDescription>
+            To comment or create topics, set your username.
+          </AlertDescription>
+        </Alert>
+      </button>
+    )
+}
 
 function App() {
-  const { project,bcfDispatch } = useContext(BcfContext)
   const [user,setUser] = useUser()
-  console.log('project :>> ',project)
+  const [markup,setMarkup] = useMarkup()
+  const { project,lastMarkupCreated,bcfDispatch } = useContext(BcfContext)
+
+  const hasTopic = () => {
+    return project && project.markups && project.markups.length > 0
+  }
+
+  const newMarkup = () => {
+    console.log("Passing newMarkup")
+    bcfDispatch({
+      type: 'NEW_MARKUP',
+      payload: { title: 'New Markup',user_name: user.name }
+    })
+  }
+
+  useEffect(() => {
+    // setUser({ name: 'dev' })
+    // console.log('App rendered')
+  },[])
+
+  useEffect(() => {
+    if (!lastMarkupCreated && project)
+      return
+
+    for (var i = 0; i < project.markups.length; i++)
+      if (project.markups[i].topic.guid === lastMarkupCreated) {
+        // eslint-disable-next-line no-loop-func
+        setMarkup((actualValue) => ({ ...actualValue,selected: i }))
+        break
+      }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[lastMarkupCreated])
 
   return (
     <header className="flex gap-2 h-full">
@@ -27,112 +72,28 @@ function App() {
           )}`
         }}
         className="h-full items-stretch">
-        <ResizablePanel>
-          <AppHeader />
-          <Separator />
-          <MarkupsList items={project.markups} />
+        <ResizablePanel className='flex flex-row min-w-[900px]'>
+          <div className='basis-1/3 flex flex-col min-w-[400px]'>
+            <AppMenuBar />
+            <Separator />
+            <NoUserAlert user={user} />
+            <MarkupsList project={project} bcfDispatch={bcfDispatch} />
+            <Button onClick={newMarkup} disabled={user.isEmpty} className='relative bottom-4 right-4 p-2 self-end w-fit h-fit text-white'>
+              <PlusIcon className='h-8 w-8' />
+            </Button>
+          </div>
+          <div className='basis-2/3 flex flex-row'>
+            <Separator orientation="vertical" className="h-full" />
+            {hasTopic() && <Topic selectedMarkupIndex={markup.selected} user={user} project={project} bcfDispatch={bcfDispatch} />}
+          </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <Topic topic={project.markups[0].topic} user={user} />
-        <ResizableHandle withHandle />
-        <Viewport />
+        <ResizablePanel className='w-full h-full'>
+          <Viewport />
+        </ResizablePanel>
       </ResizablePanelGroup>
     </header>
   )
 }
 
 export default App
-
-/*
-
-import { useContext,useEffect,useRef,useState } from 'react'
-import Viewport from './components/viewport'
-import MarkupsList from './markups-list'
-import FooterSettings from './footer-settings'
-import CommentsList from './comments-list'
-import Topic from './topic'
-import { UserContext } from '../context/user-context'
-import { BcfContext } from '../context/bcf-context'
-import { AppContext } from '../context/app-settings-context'
-
-export default function App() {
-  const { project,bcfDispatch } = useContext(BcfContext)
-  const { user,userDispatch } = useContext(UserContext)
-  const { app,appDispatch } = useContext(AppContext)
-  const [loading,setLoading] = useState(false)
-  const [selectedMarkup,setSelectedMarkup] = useState(null)
-  const transformComponentRef = useRef(null)
-
-  const handleMarkupSelect = (selectedItem) => {
-    setSelectedMarkup(selectedItem)
-  }
-
-  const createMarkup = () => {
-    const test = bcfDispatch({
-      type: "NEW_MARKUP",
-      payload: { title: 'New Markup',user_name: user.name },
-    })
-
-    console.log('test :>> ',test)
-  }
-
-  const newAttachment = () => {
-
-  }
-
-  const handleNewComment = () => {
-    const newCommentTextInput = 'new-comment-text-input'
-    if (!newCommentTextInput || !newCommentTextInput.value) return
-
-    bcfDispatch({
-      type: "NEW_COMMENT",
-      payload: { markup,comment: { comment: newCommentTextInput.value,author: user.name } },
-    })
-
-    newCommentTextInput.value = ''
-  }
-
-  const onEnterKeyDown = (e) => {
-    // if(e.key == 'Enter')
-    //     handleNewComment()
-  }
-
-  return (
-    <div className='mainContainer'>
-      {!project ? <h1>No Project</h1> :
-        <div className='projectMainContainer'>
-          <div className='leftColumn'>
-            <div className='projectHeader'>
-              <img src='./bcf-icon.svg' alt='bcf-icon'></img>
-              {!project.name ? <h1>BCF Editor</h1> : <h1>{project.name}</h1>}
-            </div>
-            <button className='mainActionButton' onClick={createMarkup}>➕ New Markup</button>
-            <div className='linearShadow' />
-            <div className='listMarkups'>
-              {loading ? ("Loading") : <MarkupsList project={project} bcfDispatch={bcfDispatch} onMarkupSelect={handleMarkupSelect} />}
-            </div>
-            <div className='linearShadow' />
-            <FooterSettings />
-          </div>
-          <div className='middleColumn'>
-            {!selectedMarkup ? <div className='withoutMarkup'><h1>Select a Markup</h1></div> :
-              <div className='withMarkup'>
-                <Topic topic={selectedMarkup.topic} />
-                <div className='commentsList'>
-                  <CommentsList markup={selectedMarkup} bcfDispatch={bcfDispatch} bcfProject={project} contextUser={user} appDispatch={appDispatch} />
-                </div>
-                <div className='newCommentContainer'>
-                  <button className='mainActionButton' onClick={newAttachment}>➕</button>
-                  <input type="text" id='new-comment-text-input' onKeyDown={onEnterKeyDown} />
-                  <button className='mainActionButton' onClick={handleNewComment}>Add Comment</button>
-                </div>
-              </div>
-            }
-          </div>
-          <Viewport />
-        </div>
-      }
-    </div>
-  )
-}
-*/
