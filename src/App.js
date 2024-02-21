@@ -44,7 +44,7 @@ function App() {
   }
 
   useEffect(() => {
-    // setUser({ name: 'dev' })
+    setUser({ name: 'dev' })
     // console.log('App rendered')
   },[])
 

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
-import { Paperclip, SendHorizonal, Trash2, ZoomIn } from "lucide-react"
+import { CalendarIcon, Paperclip, SendHorizonal, Trash2, ZoomIn } from "lucide-react"
 import { format } from "date-fns"
 import { Separator } from "./ui/separator"
 import { Textarea } from "./ui/textarea"
@@ -10,7 +10,11 @@ import { CommentsList } from "./comments-list"
 import TopicMenuBar from "./topic-menubar"
 import { Input } from "./ui/input"
 import { DropdownMultiSelect } from "./ui/dropdown-multi-select"
-import { useMarkup } from "context/app-context"
+import { useEdit, useMarkup } from "context/app-context"
+import { EditableDate, EditableText } from "./ui/editable-fields"
+import { Calendar } from "./ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
+import { cn } from "lib/utils/cn"
 
 // interface ITopic {
 //  ✅ guid: string,
@@ -72,9 +76,9 @@ function NewCommentBar({ user, bcfDispatch, topicGuid }) {
   // }
 
   return (
-    <form className="flex items-stretch">
+    <section className="flex items-stretch">
       {!attachment ? (
-        <Button onClick={newAttachment} size="sm" variant="ghost" className="ml-auto flex h-full rounded-none">
+        <Button onClick={newAttachment} size="sm" variant="ghost" className="ml-auto flex h-full rounded-none" disabled={user.isEmpty}>
           <Paperclip className="h-4 w-4" size="0.875rem" />
         </Button>
       ) : (
@@ -86,11 +90,11 @@ function NewCommentBar({ user, bcfDispatch, topicGuid }) {
           <img className="" src={attachment} alt="viewpoint snapshot" />
         </button>
       )}
-      <Textarea id="newCommentInput" className="p-2 m-[8px] min-h-[0px] h-2.25rem" placeholder={`Add a comment as ${user.name}...`} />
-      <Button type="button" onClick={createComment} size="sm" variant="ghost" className="ml-auto flex h-full rounded-none">
+      <Textarea id="newCommentInput" className="p-2 m-[8px] min-h-[0px] h-2.25rem" placeholder={`Add a comment as ${user.name}...`} disabled={user.isEmpty} />
+      <Button type="button" onClick={createComment} size="sm" variant="ghost" className="ml-auto flex h-full rounded-none" disabled={user.isEmpty}>
         <SendHorizonal className="h-4 w-4" size="0.875rem" />
       </Button>
-    </form>
+    </section>
   )
 }
 
@@ -98,6 +102,7 @@ export default function Topic({ selectedMarkupIndex, user, project, bcfDispatch 
   const [markup, setMarkup] = useMarkup()
   const topic = project.markups[selectedMarkupIndex].topic
   const [topicDescription, setTopicDescription] = useState(topic.description)
+  const [date, setDate] = useState(topic.creation_date)
 
   const deleteMarkup = () => {
     bcfDispatch({
@@ -113,11 +118,11 @@ export default function Topic({ selectedMarkupIndex, user, project, bcfDispatch 
 
   return (
     <div className="flex h-full flex-col w-full">
-      <TopicMenuBar isDisabled={!topic} deleteMarkup={deleteMarkup} />
+      <TopicMenuBar isDisabled={user.isEmpty || !topic} deleteMarkup={deleteMarkup} />
       <Separator />
       <div className="flex flex-1 flex-col">
-        <div className="flex items-start p-4 min-h-[5rem] max-h-[7em]">
-          <div className="flex items-start gap-4 text-sm">
+        <section className="flex items-start p-4 min-h-[5rem] ">
+          <div className="flex-1 flex items-start gap-4 text-sm">
             <Avatar>
               <AvatarImage alt={topic.creation_author} />
               <AvatarFallback>
@@ -127,19 +132,58 @@ export default function Topic({ selectedMarkupIndex, user, project, bcfDispatch 
                   .join("")}
               </AvatarFallback>
             </Avatar>
-            <div className="grid gap-1">
-              <div className="font-semibold truncate">{topic.creation_author}</div>
+            <div className="flex-1 grid gap-1">
+              <EditableText className="font-semibold truncate h-[2.5em] max-h-[2.5em] min-h-[2.5em] resize-none" rows={1}>
+                {topic.creation_author}
+              </EditableText>
               <Badge>Topic Type</Badge>
             </div>
           </div>
-          {topic.creation_date && <div className="ml-auto pl-4 min-w-fit text-xs text-muted-foreground text-right">{format(new Date(topic.creation_date), "MMMM do, yyyy - hh:mm a")}</div>}
-        </div>
+          <div className="flex flex-col gap-2 ml-auto pl-4 min-w-fit text-xs text-muted-foreground text-right">
+            {topic.creation_date && <div className="">{format(new Date(topic.creation_date), "MMMM do, yyyy - hh:mm a")}</div>}
+            {/* <EditableDate date={topic.due_date} /> */}
+            <div>
+              <div className="text-left">Due date</div>
+              {/* <div className="">{format(new Date(topic.due_date), "MMMM do, yyyy - hh:mm a")}</div> */}
+              {/* <Calendar /> */}
+            </div>
+            <EditableDate date={date} onChange={setDate}/>
+            {/* <Popover>
+                <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-fit pl-3 text-left font-normal gap-4",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      {date ? (
+                        format(date, "PPP")
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover> */}
+          </div>
+        </section>
         {/* <Separator /> */}
-        {/* <div className="flex-none whitespace-pre-wrap p-4 text-sm min-h-[5rem] max-h-[15rem]">{topic.description}</div> */}
-        <div className="flex-none whitespace-pre-wrap p-4 text-sm min-h-[5rem] max-h-[15rem]">
-          <Textarea value={topicDescription} />
+        <section className="flex-none whitespace-pre-wrap p-4 text-sm min-h-[5rem] max-h-[25rem]">
           {/* <DropdownMultiSelect/> */}
-        </div>
+          <EditableText placeholder="Add a description...">{topic.description}</EditableText>
+        </section>
         <Separator className="mt-auto" />
         <>{!topic.comments || topic.comments.length < 1 ? <h4 className="flex-1 flex scroll-m-20 text-xl font-semibold tracking-tight text-gray-300 text-center self-center items-center">No comments yet</h4> : <CommentsList items={topic.comments} />}</>
         <Separator className="mt-auto" />

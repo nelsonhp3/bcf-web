@@ -89,3 +89,9 @@ const userAtom = atom({
 export function useUser() {
     return useAtom(userAtom)
 }
+
+const editAtom = atom(false)
+
+export function useEdit() {
+    return useAtom(editAtom)
+}
