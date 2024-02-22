@@ -10,7 +10,11 @@ import { Input } from "./ui/input"
 import { useMarkup, useUser } from "context/app-context"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { BcfContext } from "context/bcf-context"
-import { BcfParser } from "bcf-js-dist"
+
+// nelsonhp3: This is an instance of @nelsonhp3/bcf-js in my pc. 
+// I use it when I update bcf-js be ore publishing it to npm.
+// import { BcfParser } from "bcf-js-dist"
+import { BcfParser } from "@nelsonhp3/bcf-js"
 
 function UserMenu({ user, setUser }) {
   const handleUserChange = (event) => {

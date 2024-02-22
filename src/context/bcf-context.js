@@ -1,11 +1,14 @@
 import { createContext,useEffect,useReducer } from "react"
-// import { BcfProject } from "@nelsonhp3/bcf-js"
-import { BcfProject } from "bcf-js-dist"
+
+// nelsonhp3: This is an instance of @nelsonhp3/bcf-js in my pc. 
+// I use it when I update bcf-js before publishing it to npm.
+// import { BcfParser } from "bcf-js-dist"
+import { BcfProject } from "@nelsonhp3/bcf-js"
 
 const randomLongMessage = "https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChcSEwjx88yTzJSDAxVtRUgAHXRjAOwYABAEGgJjZQ&ase=2&gclid=Cj0KCQiAsvWrBhC0ARIsAO4E6f_Ya1XcCOhJdliI_DsoQIpsAAdwCaRX2RpvLNyFhkfJqAJrUG9tdLIaAsdmEALw_wcB&ohost=www.google.com&cid=CAESVeD2EjcR3wTUJI90O8YKgUyU4epnFrHW776Lgx-jK8GZdYlRTzTBoLRKBYUgtzQfd5Scyd_CWWvjNOzRXhXMS3BC3VU_EV_jnxA5QWsnHMedaWafL8E&sig=AOD64_33-44okF3IjEfPKiAAJmG61QvTUQ&ctype=5&q=&nis=4&ved=2ahUKEwj4lMaTzJSDAxVirpUCHYkGBMIQ9aACKAB6BAgDEBU&adurl="
 const lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec arcu vel felis ultrices varius. Nullam scelerisque justo in nisl tristique, a aliquet nunc rhoncus. Vivamus et tortor diam. Fusce ac purus vitae tellus consectetur luctus. Morbi vel felis in ante tincidunt ultrices nec eu sem. Aenean vel ligula nec mauris viverra consequat. Nullam auctor justo non odio gravida, nec tincidunt ipsum vestibulum"
 
-function createBlankProject(username){
+function createBlankProject(username) {
     const blankProject = new BcfProject("Blank Project")
     blankProject.newMarkup("","","",username)
     return blankProject
@@ -97,7 +100,7 @@ export const BcfReducer = (state,action) => {
 
     switch (action.type) {
         case "NEW_PROJECT":
-            return { ...state,project: createBlankProject(payload.user_name)}
+            return { ...state,project: createBlankProject(payload.user_name) }
 
         case "LOAD_PROJECT":
             if (!payload) throw new Error("No Payload")

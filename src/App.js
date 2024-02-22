@@ -72,7 +72,7 @@ function App() {
           )}`
         }}
         className="h-full items-stretch">
-        <ResizablePanel className='flex flex-row min-w-[900px]'>
+        <ResizablePanel className='flex flex-row min-w-[960px]'>
           <div className='basis-1/3 flex flex-col min-w-[400px]'>
             <AppMenuBar />
             <Separator />
