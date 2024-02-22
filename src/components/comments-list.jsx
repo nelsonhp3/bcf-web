@@ -1,4 +1,4 @@
-import { PanelLeftOpen, Trash2 } from "lucide-react"
+import { CalendarPlus, PanelLeftOpen, Trash2 } from "lucide-react"
 import { ScrollArea } from "./ui/scroll-area"
 import { useEdit, useSnapshot } from "context/app-context"
 import { EditableDate, EditableText } from "./ui/editable-fields"
@@ -31,7 +31,7 @@ export function CommentsList({ items }) {
               {/* <div className={`w-fit overflow-hidden truncate ml-auto text-xs text-muted-foreground`}>
                   {format(item.date, 'MMMM do, yyyy - hh:mm a')}
                 </div> */}
-              <EditableDate className="w-fit overflow-hidden truncate ml-auto text-xs text-muted-foreground" date={item.date} onChange={(e) => item.date} />
+              <EditableDate icon={CalendarPlus} className="w-fit overflow-hidden truncate ml-auto text-xs text-muted-foreground" date={item.date} onChange={(e) => item.date} />
             </div>
             <EditableText className="text-xs text-muted-foreground break-all">{item.comment}</EditableText>
             {item.viewpoint && (

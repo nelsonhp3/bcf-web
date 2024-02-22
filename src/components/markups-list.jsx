@@ -1,15 +1,21 @@
-import React, { Fragment, useContext, useEffect, useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import { cn } from "../lib/utils/cn"
 import { Badge } from "./ui/badge"
 import { ScrollArea } from "./ui/scroll-area"
-import { useMarkup } from "context/app-context"
+import { useMarkup, useSnapshot } from "context/app-context"
 import formatDistanceToNow from "date-fns/formatDistanceToNow"
 
 export function MarkupsList({ items, project }) {
   // const { project } = useContext(BcfContext)
 
   const [markup, setMarkup] = useMarkup()
+  const [snapshot, setSnapshot] = useSnapshot()
   const labelsList = useRef(null)
+
+  const handleMarkupClick = (index) =>{
+    setSnapshot((actualValue) => ({ ...actualValue, src: null }))
+    setMarkup((actualValue) => ({ ...actualValue, selected: index }))
+  }
 
   useEffect(() => {
     // console.log("MarkupsList rendered")
@@ -24,7 +30,7 @@ export function MarkupsList({ items, project }) {
         <ScrollArea className="h-screen">
           <div className="flex flex-col gap-2 p-4 pt-2">
             {project.markups.map((item, index) => (
-              <button key={index} className={cn("flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent", markup.selected === index && "bg-muted")} onClick={() => setMarkup((actualValue) => ({ ...actualValue, selected: index }))}>
+              <button key={index} onClick={() => handleMarkupClick(index)} className={cn("flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent", markup.selected === index && "bg-muted")}>
                 <div className="flex w-full flex-col gap-1">
                   <div className="flex items-center gap-8">
                     <div className="flex items-center gap-2 overflow-hidden">

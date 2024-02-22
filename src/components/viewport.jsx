@@ -24,9 +24,7 @@ export default function Viewport({ src }) {
 
   return (
     <TransformWrapper id="transformWrapper" ref={transformComponentRef} initialPositionX={0} initialPositionY={0} initialScale={1} smooth={false} minScale={0.2} maxScale={1000} zoomAnimation={{ disabled: true }} alignmentAnimation={{ disabled: true }} velocityAnimation={{ disabled: true }} limitToBounds={false}>
-      <TransformComponent>
-        <img id="viewpointViewer" src={snapshot.src ?? ""} alt="" />
-      </TransformComponent>
+      <TransformComponent>{snapshot.src && <img id="viewpointViewer" src={snapshot.src} alt="" />}</TransformComponent>
     </TransformWrapper>
   )
 }
